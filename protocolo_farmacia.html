@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocolo de Ingredientes Activos</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --teal: #0F6E56; --teal-light: #E1F5EE; --teal-mid: #1D9E75;
+    --amber: #BA7517; --amber-light: #FAEEDA;
+    --coral: #993C1D; --coral-light: #FAECE7;
+    --blue: #185FA5; --blue-light: #E6F1FB;
+    --gray: #5F5E5A; --gray-light: #F1EFE8; --gray-mid: #D3D1C7;
+    --text: #2C2C2A; --text-muted: #888780;
+    --bg: #fafaf8; --white: #ffffff;
+    --radius: 10px; --radius-sm: 6px;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-mid);
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .header-icon {
+    width: 36px; height: 36px;
+    background: var(--teal);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .header-icon svg { width: 20px; height: 20px; fill: white; }
+  .header-title { font-size: 1.05rem; font-weight: 600; color: var(--text); }
+  .header-sub { font-size: 0.72rem; color: var(--text-muted); font-weight: 400; margin-top: 1px; }
+  .header-count {
+    background: var(--teal-light); color: var(--teal);
+    font-size: 0.78rem; font-weight: 500; padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  /* Main layout */
+  .main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+
+  /* Novedades */
+  .section-label {
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+  .novedades-banner {
+    background: linear-gradient(135deg, #0F6E56 0%, #1D9E75 100%);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .novedades-banner::before {
+    content: '';
+    position: absolute; top: -30px; right: -30px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+  .novedades-banner::after {
+    content: '';
+    position: absolute; bottom: -50px; right: 80px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .novedades-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .badge-new {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 10px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .novedades-title { color: white; font-size: 1.05rem; font-weight: 600; }
+  .novedades-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; position: relative; z-index: 1; }
+  @media (max-width: 580px) { .novedades-grid { grid-template-columns: 1fr; } }
+  .novedad-card {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    backdrop-filter: blur(4px);
+  }
+  .novedad-producto { font-size: 0.72rem; color: rgba(255,255,255,0.65); margin-bottom: 4px; }
+  .novedad-ingrediente { color: white; font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+  .novedad-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .novedad-pill {
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.9);
+    font-size: 0.72rem; font-weight: 500;
+    padding: 2px 9px; border-radius: 12px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Sugerencias */
+  .sugerencias-box {
+    background: var(--white);
+    border: 1px solid var(--gray-mid);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .sugerencias-icon {
+    flex-shrink: 0;
+    width: 42px; height: 42px;
+    background: var(--amber-light);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sugerencias-icon svg { width: 22px; height: 22px; fill: var(--amber); }
+  .sugerencias-text h3 { font-size: 0.92rem; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .sugerencias-text p { font-size: 0.82rem; color: var(--text-muted); }
+  .sugerencias-btn {
+    margin-left: auto; flex-shrink: 0;
+    background: var(--amber); color: white;
+    font-size: 0.82rem; font-weight: 600;
+    padding: 8px 18px; border-radius: 8px;
+    text-decoration: none; white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .sugerencias-btn:hover { background: var(--coral); }
+
+  /* Search & filter */
+  .toolbar {
+    display: flex; gap: 10px; margin-bottom: 1.25rem; flex-wrap: wrap;
+  }
+  .search-wrap {
+    flex: 1; min-width: 200px;
+    position: relative;
+  }
+  .search-wrap svg {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px; stroke: var(--text-muted); fill: none;
+    stroke-width: 2; stroke-linecap: round;
+  }
+  .search-input {
+    width: 100%;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid var(--gray-mid);
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem; font-family: 'DM Sans', sans-serif;
+    background: var(--white); color: var(--text);
+    outline: none; transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: var(--teal-mid); }
+  .filter-select {
+    padding: 8px 12px;
+    border: 1px solid var(--gray-mid);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem; font-family: 'DM Sans', sans-serif;
+    background: var(--white); color: var(--text);
+    outline: none; cursor: pointer;
+  }
+  .results-info { font-size: 0.8rem; color: var(--text-muted); padding: 4px 0; align-self: center; }
+
+  /* Table */
+  .table-wrap {
+    background: var(--white);
+    border: 1px solid var(--gray-mid);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: var(--gray-light); }
+  th {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--gray);
+    padding: 11px 16px; text-align: left;
+    border-bottom: 1px solid var(--gray-mid);
+  }
+  td {
+    padding: 11px 16px; font-size: 0.875rem;
+    border-bottom: 1px solid #f0efe8;
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f7f6f1; }
+  .td-nombre { font-size: 0.8rem; color: var(--text-muted); }
+  .td-ing { font-weight: 500; color: var(--text); }
+  .td-conc {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem; color: var(--blue);
+    background: var(--blue-light);
+    padding: 3px 8px; border-radius: 5px;
+    display: inline-block;
+  }
+  .td-pres {
+    font-size: 0.8rem; color: var(--gray);
+  }
+  .no-results {
+    text-align: center; padding: 3rem;
+    color: var(--text-muted); font-size: 0.9rem;
+  }
+
+  /* Pagination */
+  .pagination {
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px; padding: 1.25rem 0 0.5rem;
+  }
+  .page-btn {
+    width: 34px; height: 34px;
+    border: 1px solid var(--gray-mid);
+    border-radius: 6px; background: var(--white);
+    font-size: 0.85rem; cursor: pointer; color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+  }
+  .page-btn:hover { border-color: var(--teal-mid); color: var(--teal); }
+  .page-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
+  .page-btn:disabled { opacity: 0.35; cursor: default; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-brand">
+    <div class="header-icon">
+      <svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+    </div>
+    <div>
+      <div class="header-title">Protocolo Farmacéutico</div>
+      <div class="header-sub">Ingredientes activos en protocolo</div>
+    </div>
+  </div>
+  <div class="header-count" id="total-count">465 productos</div>
+</header>
+
+<main class="main">
+
+  <!-- Novedades -->
+  <div class="section-label">✦ Novedades</div>
+  <div class="novedades-banner">
+    <div class="novedades-header">
+      <span class="badge-new">Nuevos ingresos</span>
+      <span class="novedades-title">Recién incorporados al protocolo</span>
+    </div>
+    <div class="novedades-grid">
+      <div class="novedad-card">
+        <div class="novedad-producto">VASTEN E 20MG+10MG X 30 TAB.</div>
+        <div class="novedad-ingrediente">Rosuvastatina + Ezetimiba</div>
+        <div class="novedad-pills">
+          <span class="novedad-pill">20MG + 10MG</span>
+          <span class="novedad-pill">Comprimido</span>
+          <span class="novedad-pill">Caja de 30</span>
+        </div>
+      </div>
+      <div class="novedad-card">
+        <div class="novedad-producto">FIBRASTEN 160 MG · CAJA * 30 CÁPSULAS</div>
+        <div class="novedad-ingrediente">Fenofibrato</div>
+        <div class="novedad-pills">
+          <span class="novedad-pill">160MG</span>
+          <span class="novedad-pill">Cápsula</span>
+          <span class="novedad-pill">Caja de 30</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sugerencias -->
+  <div class="sugerencias-box">
+    <div class="sugerencias-icon">
+      <svg viewBox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+    </div>
+    <div class="sugerencias-text">
+      <h3>Sugerencias de ingredientes activos</h3>
+      <p>¿Tienes alguna sugerencia para ampliar el protocolo? Comparte tu recomendación con el equipo.</p>
+    </div>
+    <a class="sugerencias-btn" href="https://forms.office.com/r/FR4jxLmiZc?origin=lprLink" target="_blank">
+      Enviar sugerencia →
+    </a>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="section-label">Catálogo completo</div>
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-input" type="text" id="searchInput" placeholder="Buscar ingrediente activo, producto..." oninput="applyFilters()">
+    </div>
+    <select class="filter-select" id="presFilter" onchange="applyFilters()">
+      <option value="">Todas las presentaciones</option>
+    </select>
+    <span class="results-info" id="resultsInfo"></span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:35%">Ingrediente activo</th>
+          <th style="width:18%">Concentración</th>
+          <th style="width:22%">Presentación</th>
+          <th style="width:25%">Producto</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div id="noResults" class="no-results" style="display:none">No se encontraron resultados para tu búsqueda.</div>
+  </div>
+
+  <div class="pagination" id="pagination"></div>
+
+</main>
+
+<script>
+const PRODUCTOS = [{"nombre": "ACEPRESS 150MG - CAJA DE 28 TABLETAS", "ingrediente": "IRBESARTAN", "concentracion": "150MG", "presentacion": "COMPRIMIDO · CAJA DE 28"}, {"nombre": "ACETAMINOFEN 120MG/5ML - FRASCO * 120ML", "ingrediente": "ACETAMINOFEN", "concentracion": "120ML/5ML", "presentacion": "JARABE · FRASCO"}, {"nombre": "ACETAMINOFEN 500MG -BLISTER", "ingrediente": "ACETAMINOFEN", "concentracion": "500MG", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "ACETAMINOFEN MK GOTAS PED BEBE - FRASCO * 30ML", "ingrediente": "ACETAMINOFEN", "concentracion": "100MG/ML", "presentacion": "GOTAS · FRASCO"}, {"nombre": "ACITIP 800MG/40MG -TABLETA /20", "ingrediente": "MAGALDRATO+SIMETICONA", "concentracion": "800MG + 40MG", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "ACLERIA HIDRATANTE FACIAL", "ingrediente": "ACLERIA HIDRATANTE FACIAL", "concentracion": "", "presentacion": "CREMA · TUBO"}, {"nombre": "ADIAMET 850 MG X 30", "ingrediente": "METFORMINA", "concentracion": "850MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "ADIAMYL PLUS 2/1000 MG", "ingrediente": "METFORMINA + GLIMEPIRIDA", "concentracion": "1G+ 2MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "ADIAPLEX M 10MG/1000MG X 30 TABLETAS RECUBIERTAS", "ingrediente": "DAPAGLIFLOZINA  +  METFORMINA", "concentracion": "10MG + 1G", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "AERO OM 40MG X 30", "ingrediente": "SIMETICONA", "concentracion": "40MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "AFEXINA PEDIATRICO 30MG/5ML - FRASCO * 150ML", "ingrediente": "FEXOFENADINA", "concentracion": "30MG/5ML", "presentacion": "SUSPENSION · CAJA"}, {"nombre": "ALACIR 60MG - CAJA * 30 COMPRIMIDOS", "ingrediente": "DULOXETINA", "concentracion": "60MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "ALDOCUMAR 5MG - CAJA * 40 TABLETAS", "ingrediente": "WARFARINA SODICA", "concentracion": "5MG", "presentacion": "COMPRIMIDO · CAJA DE 40"}, {"nombre": "ALERCET 10MG - CAJA * 10 CAPSULAS", "ingrediente": "CETIRIZINA", "concentracion": "10MG", "presentacion": "CAPSULA · CAJA DE 10"}, {"nombre": "ALERCET X 60ML", "ingrediente": "CETIRIZINA", "concentracion": "5MG", "presentacion": "JARABE · CAJA"}, {"nombre": "ALEXIA FORTE", "ingrediente": "FEXOFENADINA", "concentracion": "180MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "ALFER DEX GOTAS", "ingrediente": "DEXAMETASONA", "concentracion": "0.1%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "ALFER ERI SOLUCIÓN  5ML", "ingrediente": "ERITROMICINA", "concentracion": "0.5%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "ALFER LUBRI N GOTAS - FRASCO * 15ML", "ingrediente": "NAFAZOLINA+HIPROMELOSA", "concentracion": "25MG + 5MG", "presentacion": "GOTAS · FRASCO"}, {"nombre": "ALFER LUBRI S 15ML", "ingrediente": "HIPROMELOSA", "concentracion": "0.05%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "ALFER MICINA D UNGÜENTO OFTALMICO - TUBO * 5 GRAMOS", "ingrediente": "TOBRAMICINA+DEXAMETASONA", "concentracion": "15MG + 5MG", "presentacion": "UNGENTO · TUBO"}, {"nombre": "ALFER NICOL GOTAS 0.5% - FRASCO * 15ML", "ingrediente": "CLORANFENICOL", "concentracion": "0.5%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "ALFER NICOL SOL - FRASCO * 15ML", "ingrediente": "NAFAZOLINA + CLORFENIRAMINA", "concentracion": "5MG + 7.5ML", "presentacion": "GOTAS · FRASCO"}, {"nombre": "ALFER NICOL-D FRASCO 7.5ML", "ingrediente": "CLORANFENICOL", "concentracion": "0.5%", "presentacion": "FRASCO · FRASCO"}, {"nombre": "ALIN 8 MG - CAJA * 1 AMPOLLA", "ingrediente": "DEXAMETASONA", "concentracion": "8MG", "presentacion": "INYECTABLE · CAJA DE 1"}, {"nombre": "ALKRAZIL 0.50MG X 30 (PSICO)", "ingrediente": "ALPRAZOLAM", "concentracion": "0.5MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "ALLDERM", "ingrediente": "HIDROXIZINA", "concentracion": "25MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "AMBIARE 2MG/0.25MG -X 10 TABLETAS", "ingrediente": "BETAMETASONA+DEXCLORFENIRAMINA", "concentracion": "0.25MG + 2MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "AMBIARE 2MG/0.25MG/5ML 120ML -JARABE", "ingrediente": "BETAMETASONA+DEXCLORFENIRAMINA", "concentracion": "0.25MG + 2MG", "presentacion": "JARABE · FRASCO"}, {"nombre": "AMBIARE 50 ML", "ingrediente": "BETAMETASONA+DEXCLORFENIRAMINA", "concentracion": "0.25MG + 2MG", "presentacion": "JARABE · CAJA"}, {"nombre": "AMBROX 7.5MG -GOTAS - FRASCO * 30ML", "ingrediente": "AMBROXOL", "concentracion": "75MG", "presentacion": "GOTAS · FRASCO"}, {"nombre": "AMBROX RETARD 75MG X 10", "ingrediente": "AMBROXOL", "concentracion": "75MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "AMINOAX - CAJA * 10 AMPOLLAS BEBIBLES DE 10ML", "ingrediente": "ASPARTATO DE L-ARGININA", "concentracion": "5G/10ML", "presentacion": "AMPOLLA · CAJA DE 10"}, {"nombre": "ANARA - 0.01 - SUSPENSION 125ML", "ingrediente": "PICOSULFATO", "concentracion": "10MG", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "ANARA 5MG -SOBRE -UNIDAD", "ingrediente": "PICOSULFATO", "concentracion": "5MG", "presentacion": "SOBRE · SOBRE"}, {"nombre": "ANESTESIN SIN EPINEFRINA", "ingrediente": "LIDOCAINA", "concentracion": "20MG", "presentacion": "INYECTABLE · FRASCO"}, {"nombre": "ANGINOVAG 0.1G - FRASCO * 10ML", "ingrediente": "DECUALINIO CLORURO", "concentracion": "100MG", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "ANSIL 10MG X30 TABLETAS", "ingrediente": "AMLODIPINO", "concentracion": "10MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "ANTROFI CREMA * 30 GRS + 20 APLICADORES", "ingrediente": "PROMESTRIENO", "concentracion": "", "presentacion": "CREMA · TUBO"}, {"nombre": "APIDRA SOLOSTAR PLUMA (FRIDGE)", "ingrediente": "INSULINA GLULISINA", "concentracion": "100U", "presentacion": "INYECTABLE · CAJA DE 1"}, {"nombre": "APLACORE XR 500MG - CAJA * 30 TABLETAS", "ingrediente": "DIVALPROATO", "concentracion": "500MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "AQUADRAN GEL LUBRICANTE OCULAR 5% X 10G", "ingrediente": "DEXPANTENOL", "concentracion": "5%", "presentacion": "GOTAS · TUBO"}, {"nombre": "AQUAVIT E 1000UI - CAJA * 30 CAPSULAS", "ingrediente": "VITAMINA E", "concentracion": "1000UI", "presentacion": "CAPSULA · CAJA DE 30"}, {"nombre": "ARCOCORT IM 40MG/1ML", "ingrediente": "TRIAMCINOLONA", "concentracion": "40MG", "presentacion": "INYECTABLE · AMPOLLA"}, {"nombre": "ARDILAN 500/37.5MG - CAJA * 4 TABLETAS KIT PARA PAREJA (1+1)", "ingrediente": "FLUCONAZOL+TINIDAZOL", "concentracion": "37.5MG+500MG", "presentacion": "COMPRIMIDO · KIT"}, {"nombre": "ASPIRINA ADULTO 500MG -BLISTER", "ingrediente": "ACIDO ACETILSALICILICO", "concentracion": "500MG", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "ATICEF 1 GR. I.M. * 1 VIAL", "ingrediente": "CEFTRIAXONA", "concentracion": "1G", "presentacion": "INYECTABLE · CAJA DE 1"}, {"nombre": "ATLANSIL  I.V 150MG/3ML INYECTABLE -UNIDAD", "ingrediente": "AMIODARONA", "concentracion": "150MG/3ML", "presentacion": "INYECTABLE · AMPOLLA"}, {"nombre": "ATLANSIL 200MG - CAJA * 30 TABLETAS", "ingrediente": "AMIODARONA", "concentracion": "200MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "AUDIOVIT CAJA X 30", "ingrediente": "MAGNESIO+GINKGO BILOBA+ MELATONINA", "concentracion": "236MG + 54MG + 1.9MG", "presentacion": "CAPSULA · CAJA DE 30"}, {"nombre": "AVAMIGRAN -BLISTER", "ingrediente": "TARTRATO DE ERGOTAMINA+ACETAMINOFEN+CAFEINA", "concentracion": "1MG + 450MG + 40MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "AZULFIDINE 500 MG * 100 TABLETAS", "ingrediente": "SULFASALAZINA", "concentracion": "500MG", "presentacion": "COMPRIMIDO · CAJA DE 100"}, {"nombre": "BACTEMICINA 2% - TUBO * 40 GRAMOS + 7 APLICADORES", "ingrediente": "CLINDAMICINA+KETOCONAZOL", "concentracion": "2%", "presentacion": "CREMA · TUBO"}, {"nombre": "BACTEMICINA K CREMA VAGINAL - TUBO * 35 GRAMOS", "ingrediente": "CLINDAMICINA+KETOCONAZOL", "concentracion": "100MG + 400MG", "presentacion": "CREMA · TUBO"}, {"nombre": "BELEZA CAJA X 28", "ingrediente": "DIENOGEST+ESTRADIOL", "concentracion": "2MG+3MG", "presentacion": "COMPRIMIDO · CAJA DE 28"}, {"nombre": "BETAPIROX CHAMPU - FRASCO * 120ML", "ingrediente": "PIROCTONA OLAMINA", "concentracion": "1%", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "BETAX 7MG/ML SOL INY 1ML CAJA X 2", "ingrediente": "BETAMETASONA", "concentracion": "7MG/ML", "presentacion": "INYECTABLE · CAJA DE 2"}, {"nombre": "BETISTIN 16MG X20", "ingrediente": "BETAHISTINA", "concentracion": "16MG", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "BETNOVATE  LOCION 60 ML", "ingrediente": "BETAMETASONA", "concentracion": "0.1%", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "BICARBONATO DE SODIO 50 ML - VIJOSA -", "ingrediente": "BICARBONATO DE SODIO", "concentracion": "75MG", "presentacion": "INYECTABLE · FRASCO"}, {"nombre": "BIFUSIN - TUBO * 15 GR", "ingrediente": "ACIDO FUSIDICO", "concentracion": "2%", "presentacion": "CREMA · TUBO"}, {"nombre": "BIOGAIA GOTAS", "ingrediente": "LACTOBACILLUS REUTERI", "concentracion": "100,000,000UFC", "presentacion": "SUSPENSION · CAJA"}, {"nombre": "BIOMUCOL 50MG/5ML - FRASCO * 120ML", "ingrediente": "ACEBROFILINA", "concentracion": "50MG/5ML", "presentacion": "FRASCO · FRASCO"}, {"nombre": "BLADURIL 200MG - CAJA * 20 TABLETAS", "ingrediente": "FLAVOXATO", "concentracion": "200MG", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "BLASCAN 20MG X 10 TABLETAS", "ingrediente": "BILASTINA", "concentracion": "20MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "BRIMOPRESS 0.2% EN GOTAS - FRASCO * 5ML", "ingrediente": "BRIMONIDINA", "concentracion": "0.2%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "BRIVOX 125MG - CAJA * 7 TABLETAS", "ingrediente": "BRIVUDINA", "concentracion": "125MG", "presentacion": "COMPRIMIDO · CAJA DE 7"}, {"nombre": "BRONCATOX - FRASCO * 120 ML", "ingrediente": "LEVODROPROPIZINA", "concentracion": "30MG/10ML", "presentacion": "JARABE · FRASCO"}, {"nombre": "BRONCHOVAXOM ADULTO - CAJA * 30 CAPSULAS", "ingrediente": "LISADOS BACTERIANOS", "concentracion": "7MG", "presentacion": "CAPSULA · CAJA DE 30"}, {"nombre": "BRONCHOVAXOM NIÑOS CAJA X 30 SOBRES", "ingrediente": "LISADOS BACTERIANOS", "concentracion": "3.5MG", "presentacion": "SOBRE · CAJA DE 30"}, {"nombre": "BRONCOMAT - FRASCO * 15ML", "ingrediente": "SALBUTAMOL + SOLUCION SALINA", "concentracion": "0.9% + 0.5%", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "BUDEGEN 50 AEROSOL - FRASCO * 200 DOSIS", "ingrediente": "BUDESONIDA", "concentracion": "0.05MG", "presentacion": "AEROSOL · CAJA"}, {"nombre": "BUTOSOL HFA 100MCG/50MCG - INHALADOR - FRASCO * 10ML", "ingrediente": "SALBUTAMOL+BECLOMETASONA", "concentracion": "0.1MG + 0.05MG", "presentacion": "INHALADOR · FRASCO"}, {"nombre": "CABERTRIX 0.50MG -CAJA * 2 COMPRIMIDOS", "ingrediente": "CABERGOLINA", "concentracion": "0.5MG", "presentacion": "COMPRIMIDO · CAJA DE 2"}, {"nombre": "CALADRYL CLEAR LOCION X 100 ML", "ingrediente": "ZINC+PRAMOXINA", "concentracion": "0.1% + 1%", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "CALAMINA", "ingrediente": "CALAMINA+OXIDO DE ZINC", "concentracion": "15%+5%", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "CANDIPRIN", "ingrediente": "NISTATINA", "concentracion": "100,000UI", "presentacion": "GOTAS · FRASCO"}, {"nombre": "CANDIPRIN COMBINADO UNGÜENTO - TUBO * 30 GRAMOS", "ingrediente": "NISTATINA+OXIDO DE ZINC", "concentracion": "100,000UI + 200MG", "presentacion": "UNGENTO · TUBO"}, {"nombre": "CANESTEN VAGINAL X 3 OVULOS", "ingrediente": "CLOTRIMAZOL", "concentracion": "200MG", "presentacion": "OVULOS · CAJA DE 3"}, {"nombre": "CAPTOPRIL MK 25MG -BLISTER * 10 TABLETAS", "ingrediente": "CAPTOPRIL", "concentracion": "25MG", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "CARBUM HYPACK - CAJA TRATAMIENTO * 14 DIAS", "ingrediente": "ESOMEPRAZOL +AMOXICILINA+LEVOFLOXACINA", "concentracion": "40MG + 500MG + 500MG", "presentacion": "CAPSULA · CAJA DE 98"}, {"nombre": "CARDIOASPIRINA 81 MG TABLETA", "ingrediente": "ACIDO ACETILSALICILICO", "concentracion": "81MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "CETAMIN CC 325MG/15MG -BLISTER", "ingrediente": "ACETAMINOFEN + CODEINA", "concentracion": "325MG + 15MG", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "CETOPIC 50 GR", "ingrediente": "VITAMINA C + ACIDO HIALURONICO + ACETATO DE TOCOFEROL + D-PANTENOL", "concentracion": "", "presentacion": "CREMA · CAJA"}, {"nombre": "CETOPIC SERUM 22% 30ML", "ingrediente": "VITAMINA C", "concentracion": "22%", "presentacion": "GEL · CAJA"}, {"nombre": "CILOSTAL XR 100 - CAJA * 30 TABLETAS", "ingrediente": "CILOSTAZOL", "concentracion": "100MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "CIPROBAC 200 MG/ 100 ML  IV FRASCO", "ingrediente": "CIPROFLOXACINA IV", "concentracion": "200MG/100ML", "presentacion": "INYECTABLE · FRASCO"}, {"nombre": "CIPROVAL OTICO 0.03% - FRASCO * 5ML", "ingrediente": "CIPROFLOXACINO", "concentracion": "0.3%", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "CIRBRAL FORTE", "ingrediente": "CINARIZINA", "concentracion": "75MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "CLANIC BID 600 MG/42.9ML", "ingrediente": "AMOXICILINA+ACIDO CLAVULANICO", "concentracion": "600MG + 42.9MG", "presentacion": "POLVO · FRASCO"}, {"nombre": "CLANIC BID 875MG/125MG - CAJA * 14 TABLETA", "ingrediente": "AMOXICILINA+ACIDO CLAVULANICO", "concentracion": "875MG + 125MG", "presentacion": "COMPRIMIDO · CAJA DE 14"}, {"nombre": "CLARIBAC 250MG/5ML SUSPENSION", "ingrediente": "CLARITROMICINA", "concentracion": "250MG/5ML", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "CLARIBAC 500MG -TABLETA", "ingrediente": "CLARITROMICINA", "concentracion": "500MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "CLIMABEL", "ingrediente": "TIBOLONA", "concentracion": "2.5MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "CLINDAMICINA MK 300 MG X 24 CAPSULAS", "ingrediente": "CLINDAMICINA", "concentracion": "300MG", "presentacion": "CAPSULA · CAJA DE 24"}, {"nombre": "CLINUS OVULOS+APLICADORES 100MG/400MG - CAJA * 7 OVULOS", "ingrediente": "CLINDAMICINA+KETOCONAZOL", "concentracion": "100MG + 400MG", "presentacion": "OVULOS · CAJA DE 7"}, {"nombre": "CLO-PRIM 10MG -BLISTER", "ingrediente": "METOCLOPRAMIDA", "concentracion": "10MG", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "CLO-PRIM 10MG INYECTABLE", "ingrediente": "METOCLOPRAMIDA", "concentracion": "10MG", "presentacion": "INYECTABLE · AMPOLLA"}, {"nombre": "CLO-PRIM 2MG/ML GOTAS - FRASCO * 15ML", "ingrediente": "METOCLOPRAMIDA", "concentracion": "2MG", "presentacion": "GOTAS · FRASCO"}, {"nombre": "CLO-PRIM JARABE 5MG/5ML 120ML", "ingrediente": "METOCLOPRAMIDA", "concentracion": "5MG/5ML", "presentacion": "JARABE · FRASCO"}, {"nombre": "CLONEX CD 2MG - CAJA * 30 COMPRIMIDOS (PSICO)", "ingrediente": "CLONAZEPAM", "concentracion": "2MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "CLOSTEDERM CREMA - TUBO * 50 GRAMOS", "ingrediente": "NEOMICINA+CLOSTEBOL", "concentracion": "500MG + 350MG", "presentacion": "CREMA · TUBO"}, {"nombre": "CLOSTEDERM SPRAY - FRASCO * 50ML", "ingrediente": "NEOMICINA+CLOSTEBOL", "concentracion": "300MG + 300MG", "presentacion": "AEROSOL · FRASCO"}, {"nombre": "CLOZOL 1% SOL 10ML (BEX)", "ingrediente": "CLOTRIMAZOL", "concentracion": "1%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "COLPOSAN CREMA VAGINAL - TUBO * 50 GRAMOS", "ingrediente": "TIOCONAZOL+TINIDAZOL", "concentracion": "100MG + 150MG", "presentacion": "CREMA · TUBO"}, {"nombre": "COLPOSAN OVULOS", "ingrediente": "TIOCONAZOL+TINIDAZOL", "concentracion": "100MG + 150MG", "presentacion": "OVULOS · CAJA DE 7"}, {"nombre": "COLVASTEN 20MG X30", "ingrediente": "ATORVASTATINA", "concentracion": "20MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "COMPLEJO B X 10ML / QUALIPHARM", "ingrediente": "HIDROXOCOBALAMINA+TIAMINA+PIRIDOXINA+RIBOFLAVINA", "concentracion": "0.02MG + 10MG + 5MG + 1MG", "presentacion": "VIAL · FRASCO"}, {"nombre": "CON KA JBE  240ML", "ingrediente": "GLUCONATO DE POTASIO", "concentracion": "", "presentacion": "JARABE · FRASCO"}, {"nombre": "CONFLEXIL PLUS SHOT -UNIDAD", "ingrediente": "DICLOFENACO POTASICO  + TIOCOLCHICOSIDO", "concentracion": "50MG + 4MG", "presentacion": "SOBRE · SOBRE"}, {"nombre": "CORIFEN 100MG/ML + 1MG/ML - FRASCO * 30ML", "ingrediente": "ACETAMINOFEN + CLORFENIRAMINA", "concentracion": "100MG/ML + 1MG/ML", "presentacion": "GOTAS · FRASCO"}, {"nombre": "CORTIDERM -  TUBO * 15 GRAMOS", "ingrediente": "HIDROCORTISONA", "concentracion": "1%", "presentacion": "CREMA · TUBO"}, {"nombre": "COVERSYL 5MG", "ingrediente": "PERINDOPRIL", "concentracion": "5MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "CRESPINE GEL", "ingrediente": "ACIDO HIALURONICO", "concentracion": "15%", "presentacion": "INYECTABLE · CAJA DE 1"}, {"nombre": "CRISTALTEARS PLUS 0.5% X 10ML", "ingrediente": "CARBOXIMETILCELULOSA +GLICERINA", "concentracion": "0.5% + 0.9%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "CROMUS 0.1% - TUBO * 15 GRAMOS", "ingrediente": "TACROLIMUS", "concentracion": "0.1%", "presentacion": "UNGENTO · TUBO"}, {"nombre": "CROSS-P.V.P - FRASCO * 120ML", "ingrediente": "CROSPOVIDONA", "concentracion": "0.2", "presentacion": "JARABE · FRASCO"}, {"nombre": "CUTACLIN 30 GR", "ingrediente": "CLINDAMICINA", "concentracion": "1%", "presentacion": "GEL · TUBO"}, {"nombre": "CYCLOFEMINA - CAJA * 1  AMPOLLA", "ingrediente": "MEDROXIPROGESTERONA +ESTRADIOL", "concentracion": "25MG + 5MG", "presentacion": "INYECTABLE · CAJA DE 1"}, {"nombre": "DAKTARIN GEL ORAL - TUBO * 78 GRAMOS", "ingrediente": "MICONAZOL", "concentracion": "2%", "presentacion": "GEL · TUBO"}, {"nombre": "DAZEL 40MG X 20", "ingrediente": "OTILONIO BROMURO", "concentracion": "40MG", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "DEBLAX 100KUI X 1 + 1 GRATIS", "ingrediente": "VITAMINA D3", "concentracion": "100,000UI", "presentacion": "COMPRIMIDO · CAJA DE 2"}, {"nombre": "DERMOSUPRIL 0.1% LOCION - FRASCO X30ML", "ingrediente": "DESONIDA", "concentracion": "0.1%", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "DESPAMEN 100MG/5MG/1ML - CAJA * 1 DOSIS", "ingrediente": "TESTOSTERONA + ESTRADIOL", "concentracion": "100MG + 5MG", "presentacion": "AMPOLLA · CAJA DE 1"}, {"nombre": "DESPAMEN LBD 50/2.5MG X 1 JERINGA PRELLENADA", "ingrediente": "TESTOSTERONA + ESTRADIOL", "concentracion": "100MG + 5MG", "presentacion": "INYECTABLE · CAJA DE 1"}, {"nombre": "DEXIDIAN 60MG - CAJA 28+14 CAPSULAS", "ingrediente": "DEXLANSOPRAZOL", "concentracion": "60MG", "presentacion": "CAPSULA · CAJA DE 42"}, {"nombre": "DEXILOPRAM 10MG X30+15", "ingrediente": "ESCITALOPRAM", "concentracion": "10MG", "presentacion": "COMPRIMIDO · CAJA DE 45"}, {"nombre": "DIABEGLIC M 50MG/1000MG - CAJA * 30 TABLETAS", "ingrediente": "METFORMINA + SITAGLIPTINA", "concentracion": "1G + 50MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "DICETEL DUO 100MG/300MG X24", "ingrediente": "BROMURO DE PINAVERIO + DIMETICONA", "concentracion": "100MG + 300MG", "presentacion": "COMPRIMIDO · CAJA DE 24"}, {"nombre": "DIGESTOMEN COMPLEX -BLISTER * 10 COMPRIMIDOS", "ingrediente": "PEPSINA+PAPAINA+PANCREATINA+BROMELINA+AMILASA+LIPASA", "concentracion": "100MG + 50MG + 50MG + 50MG + 50MG + 15MG", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "DIGLET GOTAS PEDIATRICO", "ingrediente": "VITAMINA D3", "concentracion": "200UI", "presentacion": "GOTAS · FRASCO"}, {"nombre": "DINISTER 200MG X20", "ingrediente": "MEBEVERINA", "concentracion": "200MG", "presentacion": "CAPSULA · CAJA DE 20"}, {"nombre": "DISLEP 25MG - CAJA * 6 AMPOLLAS", "ingrediente": "LEVOSULPIRIDA", "concentracion": "25MG", "presentacion": "INYECTABLE · CAJA DE 6"}, {"nombre": "DIURETYK 50MG - CAJA * 30 TABLETAS", "ingrediente": "HIDROCLOROTIAZIDA", "concentracion": "50MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "DOLANTAG 25MG /10ML X 1 AMPOLLA BEBIBLE", "ingrediente": "DEXKETOPROFENO", "concentracion": "25MG/10ML", "presentacion": "VIAL · UND"}, {"nombre": "DOLGENAL 20MG  CAJA X 10 TABLETAS", "ingrediente": "KETOROLACO", "concentracion": "20MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "DOLGENAL INYECTABLE 30MG", "ingrediente": "KETOROLACO", "concentracion": "30MG", "presentacion": "INYECTABLE · AMPOLLA"}, {"nombre": "DONOEPOC 200MG CAJA DE 10+2 SOBRES", "ingrediente": "ACETILCISTEINA", "concentracion": "200MG", "presentacion": "SOBRE · CAJA DE 12"}, {"nombre": "DONOEPOC 600MG X10+2 SOBRES 3G", "ingrediente": "ACETILCISTEINA", "concentracion": "600MG", "presentacion": "POLVO · CAJA DE 12"}, {"nombre": "DONOSARTAN 16MG", "ingrediente": "CANDESARTAN", "concentracion": "16MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "DONOSARTAN 32MG - CAJA * 30 TABLETAS", "ingrediente": "CANDESARTAN", "concentracion": "32MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "DONOSARTAN HCT 16MG /12.5MG CAJA 15+5", "ingrediente": "CANDESARTAN + HIDROCLOROTIAZIDA", "concentracion": "16MG + 12.5MG", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "DORIXINA RELAX - 125MG/5MG - 10 TABLETAS BLISTER", "ingrediente": "CLONIXINATO DE LISINA+CICLOBENZAPRINA", "concentracion": "125MG + 5MG", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "DUALDOL 200MG X10", "ingrediente": "CELECOXIB", "concentracion": "200MG", "presentacion": "CAPSULA · CAJA DE 10"}, {"nombre": "DUALTEN 12.5MG X30", "ingrediente": "CARVEDILOL", "concentracion": "12.5MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "DUPHASTON 10MG X20", "ingrediente": "DIDROGESTERONA", "concentracion": "10MG", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "EMPIRIA 10MG - CAJA * 30 TABLETAS", "ingrediente": "EMPAGLIFLOZINA", "concentracion": "10MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "EMPIRIA DUO 12.5/850 - CAJA * 60 TABLETAS", "ingrediente": "EMPAGLIFLOZINA + METFORMINA", "concentracion": "12.5MG + 850MG", "presentacion": "COMPRIMIDO · CAJA DE 60"}, {"nombre": "ENDOBELLE 2MG X CAJA DE  28 COMPRIMIDOS", "ingrediente": "DIENOGEST", "concentracion": "2MG", "presentacion": "COMPRIMIDO · CAJA DE 28"}, {"nombre": "ENTEROLAN 160/800 X 20", "ingrediente": "TRIMETOPRIM+SULFAMETOZAXOL", "concentracion": "160MG+800MG", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "ENTEROLAN SUSPENSION - FRASCO * 60 ML", "ingrediente": "TRIMETOPRIM+SULFAMETOZAXOL", "concentracion": "40MG+200MG", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "ENTEROVID 400MG", "ingrediente": "NIFUROXAZIDA", "concentracion": "400MG", "presentacion": "COMPRIMIDO · CAJA DE 12"}, {"nombre": "EPINEFRINA - 1MG/ML - INYECTABLE", "ingrediente": "ADRENALINA", "concentracion": "1MG/ML", "presentacion": "INYECTABLE · AMPOLLA"}, {"nombre": "EQUILIV GOTAS (PSICO)", "ingrediente": "CLONAZEPAM", "concentracion": "2.5MG/1ML", "presentacion": "GOTAS · FRASCO"}, {"nombre": "ESTROTAB  2MG CAJA * 30 TABLETAS", "ingrediente": "ESTRADIOL", "concentracion": "2MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "ESTROTAB 1MG - CAJA * 30 TABLETAS", "ingrediente": "ESTRADIOL", "concentracion": "1MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "ETADEX 100MG/5ML - FRASCO * 50ML", "ingrediente": "CEFIXIMA", "concentracion": "100MG/5ML", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "ETADEX 400MG - CAJA * 10 TABLETAS", "ingrediente": "CEFIXIMA", "concentracion": "400MG", "presentacion": "CAPSULA · CAJA DE 10"}, {"nombre": "ETEROVAL 120MG - CAJA * 7 COMPRIMIDOS", "ingrediente": "ETORICOXIB", "concentracion": "120MG", "presentacion": "COMPRIMIDO · CAJA DE 7"}, {"nombre": "ETEROVAL 90MG - CAJA * 14 COMPRIMIDOS", "ingrediente": "ETORICOXIB", "concentracion": "90MG", "presentacion": "COMPRIMIDO · CAJA DE 14"}, {"nombre": "EXPANSIA 75MG X28", "ingrediente": "CLOPIDOGREL", "concentracion": "75MG", "presentacion": "COMPRIMIDO · CAJA DE 28"}, {"nombre": "FANK 20MG - BLISTER * 5 TABLETAS", "ingrediente": "FAMOTIDINA", "concentracion": "20MG", "presentacion": "COMPRIMIDO · BLISTER DE 5"}, {"nombre": "FANTER 10MG X30 COMPRIMIDOS", "ingrediente": "DAPAGLIFLOZINA", "concentracion": "10MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "FARLABORIN SOBRE -UNIDAD", "ingrediente": "CALCIO + SULFATO DE ALUMINIO", "concentracion": "36.45G + 51.80G", "presentacion": "SOBRE · SOBRE"}, {"nombre": "FASTUM GEL  50 GRAMOS", "ingrediente": "KETOPROFENO", "concentracion": "25MG", "presentacion": "GEL · TUBO"}, {"nombre": "FEMGYL 1ML - CAJA * 1 AMPOLLA", "ingrediente": "NORETISTERONA+ESTRADIOL", "concentracion": "50MG + 5MG", "presentacion": "AMPOLLA · CAJA DE 1"}, {"nombre": "FENOVAS 20MG - CAJA * 30 CAPSULAS", "ingrediente": "ROSUVASTATINA+FENOFIBRATO", "concentracion": "135MG + 20MG", "presentacion": "CAPSULA · CAJA DE 30"}, {"nombre": "FEXALAR D 60MG/25MG CAJA", "ingrediente": "FEXOFENADINA + FENILEFRINA", "concentracion": "60MG + 25MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "FIBRASTEN 160 MG (FENOFIBRATO ) CAJA * 30 CAPSULAS", "ingrediente": "FENOFIBRATO", "concentracion": "160MG", "presentacion": "CAPSULA · CAJA DE 30"}, {"nombre": "FIRIALTA 10MG X 28 TABLETAS", "ingrediente": "FINERENONA", "concentracion": "10MG", "presentacion": "CAPSULA · CAJA DE 28"}, {"nombre": "FLAMYDOL 75MG -INYECTABLE", "ingrediente": "DICLOFENACO POTASICO", "concentracion": "75MG", "presentacion": "INYECTABLE · CAJA DE 1"}, {"nombre": "FLUCONAZOL 150MG (LANCASCO) - CAJA * 1 CAPSULA", "ingrediente": "FLUCONAZOL", "concentracion": "150MG", "presentacion": "CAPSULA · CAJA"}, {"nombre": "FLUMETOL NF 5ML", "ingrediente": "FLUOROMETOLONA", "concentracion": "0.1%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "FLUTIMIST 27.5MCG SPRAY NASAL X 120 DOSIS", "ingrediente": "FUROATO DE FLUTICASONA", "concentracion": "0.0275MG", "presentacion": "AEROSOL · FRASCO"}, {"nombre": "FLUTIMIST A 50/137UG SPRAY NASAL X 120 D", "ingrediente": "FLUTICASONA+AZELASTINA", "concentracion": "0.05MG + 0.137MG", "presentacion": "AEROSOL · FRASCO"}, {"nombre": "FLUZINA 10 MG CAJA X 30 TABLETAS", "ingrediente": "FLUNARIZINA", "concentracion": "10MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "FOLY HIERRO 1000MG X30", "ingrediente": "HIERRO AMINOQUELADO", "concentracion": "1G", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "FOLY HIERRO JARABE 120ML", "ingrediente": "HIERRO AMINOQUELADO", "concentracion": "75MG", "presentacion": "JARABE · CAJA"}, {"nombre": "FORT ZINK  JARABE 20MG/5ML - FRASCO 120ML", "ingrediente": "ZINC", "concentracion": "20MG/5ML", "presentacion": "JARABE · FRASCO"}, {"nombre": "FORT ZINK 20MG - CAJA * 20 CAPSULAS", "ingrediente": "ZINC", "concentracion": "20MG", "presentacion": "CAPSULA · CAJA DE 20"}, {"nombre": "FREEGEN GEL 1% * 15 ML", "ingrediente": "CARBOXIMETILCELULOSA", "concentracion": "1%", "presentacion": "GEL · CAJA"}, {"nombre": "FULCRUM -BLISTER 5MG/12.5MG", "ingrediente": "AMITRIPTILINA + CLORDIAZEPOXIDO", "concentracion": "12.5MG + 5MG", "presentacion": "COMPRIMIDO · BLISTER DE 15"}, {"nombre": "GABEX PLUS", "ingrediente": "GABAPENTINA+VITAMINA B1+VITAMINA B12", "concentracion": "300MG + 100MG + 0.2MG", "presentacion": "CAPSULA · CAJA DE 30"}, {"nombre": "GASTROFLUX -SUSPENCION", "ingrediente": "DOMPERIDONA", "concentracion": "1MG", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "GASTROFLUX 10MG - CAJA * 30 TABLETAS", "ingrediente": "DOMPERIDONA", "concentracion": "10MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "GESIMAX GASTRIC 500 MG/20MG * 10 TABLETAS", "ingrediente": "ESOMEPRAZOL+NAPROXENO", "concentracion": "20MG + 500MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "GIVOTAN POLVO SUSPENSION - FRASCO * 60 ML", "ingrediente": "NITAZOXANIDA", "concentracion": "100MG/5ML", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "GLICERINA USP", "ingrediente": "GLICERINA", "concentracion": "99.7%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "GLICOLIC CHAMPU 240ML", "ingrediente": "ACIDO GLICOLICO", "concentracion": "10%", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "GLICOLIC CREMA 60 GRAMOS", "ingrediente": "ACIDO GLICOLICO", "concentracion": "10%", "presentacion": "CREMA · TUBO"}, {"nombre": "GLICOLIC LOCION - FRASCO * 60ML", "ingrediente": "ACIDO GLICOLICO", "concentracion": "10%", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "GLUCOFLEX - CAJA * 15  SOBRES", "ingrediente": "GLUCOSAMINA+CONDROITINA", "concentracion": "1.5G + 1.2G", "presentacion": "SOBRE · CAJA DE 15"}, {"nombre": "GOTURIC 80MG - CAJA * 30 TABLETAS", "ingrediente": "FEBUXOSTAT", "concentracion": "80MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "GYNFLU D", "ingrediente": "FLUCONAZOL+SECNIDAZOL", "concentracion": "75MG + 1G", "presentacion": "COMPRIMIDO · CAJA DE 4"}, {"nombre": "GYNOTRAN - CAJA * 7 OVULOS", "ingrediente": "METRONIDAZOL+MICONAZOL", "concentracion": "750MG + 200MG", "presentacion": "OVULOS · CAJA DE 7"}, {"nombre": "HEMOR 5% CREMA TOPICA CON 7 APLICADORES", "ingrediente": "POLICRESULENO+CINCOCAINA", "concentracion": "5%+1%", "presentacion": "CREMA · TUBO"}, {"nombre": "HEPA MERZ - CAJA * 10 SOBRES", "ingrediente": "L-ORNITINA L-ASPARTATO", "concentracion": "3G", "presentacion": "SOBRE · CAJA DE 10"}, {"nombre": "HEPAKRAL FORTE 240MG CAJA * 40 TABLETAS", "ingrediente": "COMPLEJO DE SILIBINA CON FOSFATIDILCOLINA", "concentracion": "240MG", "presentacion": "COMPRIMIDO · CAJA DE 40"}, {"nombre": "HIALOF HIDRA 02% SOLUCION - FRASCO * 10ML", "ingrediente": "HIALURONATO DE SODIO", "concentracion": "0.2%", "presentacion": "FRASCO · FRASCO"}, {"nombre": "HIDRASEC 100MG -CAJA *9 CAPSULAS", "ingrediente": "RACECADOTRILO", "concentracion": "100MG", "presentacion": "CAPSULA · CAJA DE 9"}, {"nombre": "HIDRASEC 10MG -CAJA * 18 SOBRES", "ingrediente": "RACECADOTRILO", "concentracion": "10MG", "presentacion": "SOBRE · CAJA DE 18"}, {"nombre": "HIDRAVIDA FRESA * 625 ML", "ingrediente": "ELECTROLITOS", "concentracion": "", "presentacion": "LIQUIDO · FRASCO"}, {"nombre": "HIDRAVIDA LIMA LIMON X 625ML", "ingrediente": "ELECTROLITOS", "concentracion": "", "presentacion": "LIQUIDO · BOTE"}, {"nombre": "HIDRAVIDA MORA AZUL X 625ML", "ingrediente": "ELECTROLITOS", "concentracion": "", "presentacion": "LIQUIDO · BOTE"}, {"nombre": "HIDRAVIDA NARANJA MANDARINA * 625 ML", "ingrediente": "ELECTROLITOS", "concentracion": "", "presentacion": "LIQUIDO · BOTE"}, {"nombre": "HIDRAVIDA UVA * 625 ML", "ingrediente": "ELECTROLITOS", "concentracion": "", "presentacion": "LIQUIDO · BOTE"}, {"nombre": "HIDROFEROL 0.266 MG X 1 CAPSULA", "ingrediente": "CALCIFEDIOL", "concentracion": "0.266MG", "presentacion": "CAPSULA · CAJA DE 1"}, {"nombre": "HIPOPRESS GOTAS 20ML", "ingrediente": "ETILEFRINA", "concentracion": "7.5MG", "presentacion": "GOTAS · FRASCO"}, {"nombre": "HISTAPRIN 10MG INYECTABLE", "ingrediente": "CLORFENIRAMINA", "concentracion": "10MG", "presentacion": "INYECTABLE · AMPOLLA"}, {"nombre": "HISTAPRIN S/C - 2MG/5ML - JARABE 120ML", "ingrediente": "CLORFENIRAMINA", "concentracion": "2MG/5ML", "presentacion": "JARABE · FRASCO"}, {"nombre": "HORMOFEN", "ingrediente": "GESTODENO+ETINILESTRADIOL", "concentracion": "0.075MG + 0.02MG", "presentacion": "COMPRIMIDO · CAJA DE 21"}, {"nombre": "HUMALOG SIMPLE 100U/ML KWIKPEN * 5 LAPICEROS (FRIDGE)", "ingrediente": "INSULINA LISPRO", "concentracion": "100U", "presentacion": "INYECTABLE · CAJA DE 5"}, {"nombre": "HUMYLUB OFTENO - FRASCO * 15ML", "ingrediente": "SULFATO SODICO DE CONDROITINA+HIALURONATO DE SODIO", "concentracion": "0.18%+0.1%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "HUMYLUB OFTENO PF - FRASCO * 10ML", "ingrediente": "SULFATO SODICO DE CONDROITINA+HIALURONATO DE SODIO", "concentracion": "0.18%+0.1%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "HYNDRIAX 20MG - CAJA * 30 CAPSULAS", "ingrediente": "ISOTRETINOINA", "concentracion": "20MG", "presentacion": "CAPSULA · CAJA DE 30"}, {"nombre": "IBUPROFENO 400MG -BLISTER", "ingrediente": "IBUPROFENO", "concentracion": "400MG", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "IBUPROFENO LANCASCO 100MG * 1 FRASCO 60CC", "ingrediente": "IBUPROFENO", "concentracion": "100MG/5ML", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "ILIADIN ADULTO - FRASCO * 20ML", "ingrediente": "OXIMETAZOLINA", "concentracion": "0.05%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "ILIADIN INFANTIL 0.25 - FRASCO * 20ML", "ingrediente": "OXIMETAZOLINA", "concentracion": "0.025%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "ILIADIN LUB ADULTO 0.05%/2.033G/100ML", "ingrediente": "OXIMETAZOLINA+DEXPANTENOL", "concentracion": "0.50% + 2.03%", "presentacion": "AEROSOL · FRASCO"}, {"nombre": "ILTUXAM 40MG / 10MG CAJA * 28 TABLETAS", "ingrediente": "OLMESARTAN+AMLODIPINO", "concentracion": "40MG + 10MG", "presentacion": "COMPRIMIDO · CAJA DE 28"}, {"nombre": "IMODIUM 2MG - CAJA * 12 GRAGEAS", "ingrediente": "LOPERAMIDA", "concentracion": "2MG", "presentacion": "GRAGEAS · CAJA DE 12"}, {"nombre": "INDOMETACINA 25MK -BLISTER", "ingrediente": "INDOMETACINA", "concentracion": "25MG", "presentacion": "CAPSULA · BLISTER DE 10"}, {"nombre": "INDULAN 25MG X10", "ingrediente": "DEXKETOPROFENO", "concentracion": "25MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "INDULAN 50MG/2ML * 1 AMPOLLA", "ingrediente": "DEXKETOPROFENO", "concentracion": "50MG/2ML", "presentacion": "INYECTABLE · CAJA DE 1"}, {"nombre": "INYOK 0.5 MG / ML SUSPENSION PARA NEBULIZACION - CAJA * 5 AMPOLLAS", "ingrediente": "BUDESONIDA", "concentracion": "0.5MG/1ML", "presentacion": "AMPOLLA · CAJA DE 5"}, {"nombre": "IPRAK SP 750MCG X10ML", "ingrediente": "IPRATROPIO", "concentracion": "0.75MG", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "IRUXOL", "ingrediente": "CLOSTRIDIOPEPTIDASA+CLORAMFENICOL", "concentracion": "60U+1G", "presentacion": "UNGENTO · TUBO"}, {"nombre": "ISBELA 2/0.035MG - CAJA * 21 TABLETAS", "ingrediente": "CIPROTERONA+ETINILESTRADIOL", "concentracion": "2MG + 0.035MG", "presentacion": "COMPRIMIDO · CAJA DE 21"}, {"nombre": "IVERMECTINA 6MG - CAJA * 6 COMPRIMIDOS", "ingrediente": "IVERMECTINA", "concentracion": "6MG", "presentacion": "COMPRIMIDO · CAJA DE 6"}, {"nombre": "JARIT 200MG X30", "ingrediente": "PROGESTERONA", "concentracion": "200MG", "presentacion": "CAPSULA · CAJA DE 30"}, {"nombre": "KEFENTECH PARCHES -SOBRE X4", "ingrediente": "KETOPROFENO", "concentracion": "30MG", "presentacion": "PARCHE · CAJA DE 4"}, {"nombre": "KETOSPOR 2% - FRASCO * 20ML", "ingrediente": "KETOCONAZOL", "concentracion": "2%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "KOLCHIVAN 0.50MG -BLISTER", "ingrediente": "COLCHICINA", "concentracion": "0.5MG", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "KOLESTEVAN E 20MG/10MG X30 TABLETAS", "ingrediente": "ATORVASTATINA + EZETIMIBE", "concentracion": "20MG + 10MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "KOLPAS - FRASCO * 20ML", "ingrediente": "PROPINOXATO", "concentracion": "5MG", "presentacion": "GOTAS · FRASCO"}, {"nombre": "KRALFATO 1G/5ML -1G SOBRES", "ingrediente": "SUCRALFATO", "concentracion": "1G/5ML", "presentacion": "SOBRE · CAJA DE 30"}, {"nombre": "KRALFLEX 8MG - CAJA * 10 TABLETAS", "ingrediente": "TIOCOLCHICOSIDO", "concentracion": "8MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "KRALFLEX INYECTABLE", "ingrediente": "TIOCOLCHICOSIDO", "concentracion": "4MG", "presentacion": "INYECTABLE · CAJA DE 2"}, {"nombre": "KRALVIR-US 200MG/5ML - FRASCO * 120ML", "ingrediente": "ACICLOVIR", "concentracion": "200MG/5ML", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "KRALVIR-US 800MG - CAJA * 10 TABLETAS", "ingrediente": "ACICLOVIR", "concentracion": "800MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "KRALVIR-US CREMA", "ingrediente": "ACICLOVIR", "concentracion": "5%", "presentacion": "CREMA · CAJA"}, {"nombre": "LACTULOSA MALLEN 66.7G/100ML - FRASCO * 240ML", "ingrediente": "LACTULOSA", "concentracion": "66.7G/100ML", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "LANSOGASTRIC 15MG -*15 SOBRES", "ingrediente": "LANSOPRAZOL", "concentracion": "15MG", "presentacion": "POLVO · CAJA DE 15"}, {"nombre": "LANSOPEP 30MG - CAJA * 14 CAPSULAS", "ingrediente": "LANSOPRAZOL", "concentracion": "30MG", "presentacion": "CAPSULA · CAJA DE 14"}, {"nombre": "LANTUS SOLOSTAR PLUMA 3ML (FRIDGE)", "ingrediente": "INSULINA GLARGINA", "concentracion": "100U", "presentacion": "INYECTABLE · CAJA DE 1"}, {"nombre": "LASIX 40 MG CAJA X 20 TABLETAS", "ingrediente": "FUROSEMIDA", "concentracion": "40MG", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "LATOF-T X 2.5ML (FRIGDE)", "ingrediente": "LATONOPROST", "concentracion": "0.005%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "LEVOFLOXACINA (CS) 5MG/100 ML - INYECTABLE", "ingrediente": "LEVOFLOXACINA", "concentracion": "5MG/100ML", "presentacion": "INYECTABLE · UND"}, {"nombre": "LEVUSOL CEREZA DIABETICO 475 ML", "ingrediente": "CLORURO DE SODIO+CLORURO DE POTASIO+CITRATO DE TRISDIOC(2H2O)+LEVULOSA", "concentracion": "350MG + 120MG + 290MG + 2G", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "LEVUSOL COCO DIABETICO 475 ML", "ingrediente": "CLORURO DE SODIO+CLORURO DE POTASIO+CITRATO DE TRISDIOC(2H2O)+LEVULOSA", "concentracion": "350MG + 120MG + 290MG + 2G", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "LEVUSOL MANZANA DIABETICO 475 ML", "ingrediente": "CLORURO DE SODIO+CLORURO DE POTASIO+CITRATO DE TRISDIOC(2H2O)+LEVULOSA", "concentracion": "350MG + 120MG + 290MG + 2G", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "LEVUSOL PINA 475ML SUERO PARA DIABETICOS", "ingrediente": "CLORURO DE SODIO+CLORURO DE POTASIO+CITRATO DE TRISDIOC(2H2O)+LEVULOSA", "concentracion": "350MG + 120MG + 290MG + 2G", "presentacion": "SOLUCION · BOTE"}, {"nombre": "LIOTON 1000 GEL - TUBO * 30 GRAMOS", "ingrediente": "HEPARINA SODICA", "concentracion": "1000UI", "presentacion": "GEL · TUBO"}, {"nombre": "LIPIKAR BAUME AP M BALSAMO - FRASCO * 200ML", "ingrediente": "MANTECA DE KARITE+NIACINAMIDA", "concentracion": "", "presentacion": "BALSAMO · FRASCO"}, {"nombre": "LOTRIAL 20MG CAJA X 30", "ingrediente": "ENALAPRIL", "concentracion": "20MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "LOXILAN 750 MG X 5", "ingrediente": "LEVOFLOXACINA", "concentracion": "750MG", "presentacion": "COMPRIMIDO · CAJA DE 5"}, {"nombre": "MANTIXA 5MG - CAJA * 30 TABLETAS", "ingrediente": "APIXABAN", "concentracion": "5MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "MARCELLE - CAJA * 28 TABLETAS", "ingrediente": "DROSPIRENONA + ESTRADIOL", "concentracion": "2MG + 1MG", "presentacion": "COMPRIMIDO · CAJA DE 28"}, {"nombre": "MARTESIA DIVIDOSIS 75MG - CAJA * 30 TABLETAS", "ingrediente": "PREGABALINA", "concentracion": "75MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "MECOBAL 500MCG TAB (BEX)", "ingrediente": "MECOBALAMINA", "concentracion": "0.5MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "MEDOCOR - CAJA * 20 TABLETAS 20 MG", "ingrediente": "MONITRARO DE ISOSORBIDA", "concentracion": "20MG", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "MEGEX-1 800MG - CAJA * 20 SOBRES", "ingrediente": "MEGESTROL", "concentracion": "800MG", "presentacion": "SOBRE · CAJA DE 20"}, {"nombre": "METAVAN XR 1000 MG X 30 + 10", "ingrediente": "METFORMINA LIBERACIÓN PROLONGADA", "concentracion": "1G", "presentacion": "COMPRIMIDO · CAJA DE 40"}, {"nombre": "METAVAN XR 500MG - CAJA * 30 + 10 TABLETAS", "ingrediente": "METFORMINA LIBERACIÓN PROLONGADA", "concentracion": "500MG", "presentacion": "COMPRIMIDO · CAJA DE 40"}, {"nombre": "METIOM FRASCO IV 40MG X 1 AMP", "ingrediente": "ESOMEPRAZOL", "concentracion": "40MG", "presentacion": "INYECTABLE · AMPOLLA"}, {"nombre": "METOCARBAN AC 400MG/250MG -BLISTER * 10 TABLETAS", "ingrediente": "METOCARBAMOL+ACETAMINOFEN", "concentracion": "400MG + 250MG", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "METRONIDAZOL MK 250MG 120 ML", "ingrediente": "METRONIDAZOL", "concentracion": "250MG/5ML", "presentacion": "SUSPENSION · CAJA"}, {"nombre": "METRONIDAZOL MK 500MG - CAJA * 10  TABLETAS", "ingrediente": "METRONIDAZOL", "concentracion": "500MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "MIGRADORIXINA 125MG/1MG -BLISTER", "ingrediente": "CLONIXINATO DE LISINA+ERGOTAMINA", "concentracion": "125MG + 1MG", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "MINOT 100MG- CAJA * 10 CAPSULAS", "ingrediente": "MINOCICLINA", "concentracion": "100MG", "presentacion": "CAPSULA · CAJA DE 10"}, {"nombre": "MIOLAXIN 500MG/ 5 ML - CAJA * 1 DOSIS", "ingrediente": "METOCARBAMOL", "concentracion": "500MG", "presentacion": "AMPOLLA · CAJA DE 1"}, {"nombre": "MODIFICAL 8MG X 1 AMPOLLA", "ingrediente": "ONDANSETRON", "concentracion": "8MG", "presentacion": "INYECTABLE · CAJA DE 1"}, {"nombre": "MOTIDE 5MG - CAJA * 30 TABLETAS", "ingrediente": "MOSAPRIDA", "concentracion": "5MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "MOTRAX ADULTO 17G - UNIDAD", "ingrediente": "POLIETILENGLICOL", "concentracion": "", "presentacion": "SOBRE · SOBRE"}, {"nombre": "MOTRAX INFANTIL  10 GR  - SOBRE", "ingrediente": "POLIETILENGLICOL", "concentracion": "", "presentacion": "SOBRE · SOBRE"}, {"nombre": "MOVISIL SOBRES 10G X 30", "ingrediente": "COLAGENO HIDROLIZADO", "concentracion": "10G", "presentacion": "SOBRE · CAJA DE 30"}, {"nombre": "MUCARBOL PEDIATRICO * 120 ML", "ingrediente": "CARBOCISTEINA", "concentracion": "100MG/5ML", "presentacion": "JARABE · FRASCO"}, {"nombre": "MUCOSOLVAN COMPUESTO", "ingrediente": "AMBROXOL + CLEMBUTEROL", "concentracion": "7.5MG + 5MG", "presentacion": "JARABE · CAJA"}, {"nombre": "MUCOSOLVAN SIMPLE", "ingrediente": "AMBROXOL", "concentracion": "15MG /5ML", "presentacion": "JARABE · CAJA"}, {"nombre": "MUSCULARE 5MG CAJA X 15", "ingrediente": "CICLOBENZAPRINA", "concentracion": "5MG", "presentacion": "COMPRIMIDO · CAJA DE 15"}, {"nombre": "MUVETT - 50MG - INYECTABLE", "ingrediente": "TRIMEBUTINA", "concentracion": "50MG", "presentacion": "INYECTABLE · CAJA DE 2"}, {"nombre": "MUVETT 200MG/15ML - FRASCO * 120 ML", "ingrediente": "TRIMEBUTINA", "concentracion": "200MG", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "MUVETT 300MG - CAJA * 20 TABLETAS", "ingrediente": "TRIMEBUTINA", "concentracion": "300MG", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "MUVETT S 200MG/120MG", "ingrediente": "TRIMEBUTINA +SIMETICONA", "concentracion": "200MG + 120MG", "presentacion": "COMPRIMIDO · CAJA DE 21"}, {"nombre": "MUXELIX 35MG/5ML - FRASCO * 120ML", "ingrediente": "HEDERA HELIX", "concentracion": "35MG/5ML", "presentacion": "JARABE · FRASCO"}, {"nombre": "NAFINA PLUS - FRASCO * 15ML", "ingrediente": "NAFAZOLINA+HIDROXIPILCELULOSA", "concentracion": "0.1% + 0.5%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "NATRILIX SR 1.5MG CAJA 30 TABLETAS", "ingrediente": "INDAPAMIDA", "concentracion": "1.5MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "NAUSEOL 50MG -BLISTER", "ingrediente": "DIMENHIDRINATO", "concentracion": "50MG", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "NAUSEOL 60 ML", "ingrediente": "DIMENHIDRINATO", "concentracion": "15MG", "presentacion": "JARABE · FRASCO"}, {"nombre": "NAUSEOL INYECTABLE", "ingrediente": "DIMENHIDRINATO", "concentracion": "50MG", "presentacion": "INYECTABLE · AMPOLLA"}, {"nombre": "NAUSEOL SUPOSITORIO", "ingrediente": "DIMENHIDRINATO", "concentracion": "25MG", "presentacion": "SUPOSITORIO · CAJA DE 6"}, {"nombre": "NAUXIL 10MG/10MG/ML X15ML GOTAS", "ingrediente": "DOXILAMINA+PIRIDOXINA", "concentracion": "10MG + 10MG", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "NAZIL OFTENO 15 ML", "ingrediente": "NAFAZOLINA", "concentracion": "15ML", "presentacion": "GOTAS · FRASCO"}, {"nombre": "NEBISTAR 5MG CAJA X 30 +15", "ingrediente": "NEBIVOLOL", "concentracion": "5MG", "presentacion": "COMPRIMIDO · CAJA DE 45"}, {"nombre": "NEBRALGIA CAJA X 30", "ingrediente": "GABAPENTINA+VITAMINA B1+VITAMINA B12", "concentracion": "300MG + 100MG + 0.2MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "NEO-MELUBRINA 250MG/5ML -FRASCO", "ingrediente": "METAMIZOL", "concentracion": "250MG/5ML", "presentacion": "JARABE · FRASCO"}, {"nombre": "NEO-MELUBRINA 300MG - CAJA * 5 SUPOSITORIOS", "ingrediente": "METAMIZOL", "concentracion": "300MG", "presentacion": "SUPOSITORIO · CAJA DE 5"}, {"nombre": "NEO-MELUBRINA 500MG -BLISTER", "ingrediente": "METAMIZOL", "concentracion": "500MG", "presentacion": "COMPRIMIDO · BLISTER DE 4"}, {"nombre": "NEO-MELUBRINA 500MG-UNIDAD INYECTABLE", "ingrediente": "METAMIZOL", "concentracion": "500MG", "presentacion": "INYECTABLE · AMPOLLA"}, {"nombre": "NEODEX - FRASCO * 5ML", "ingrediente": "DEXAMETASONA+NEOMICINA", "concentracion": "0.1%+0.35%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "NEUMOCORT AEROSOL 200MCG X 200 DOSIS", "ingrediente": "BUDESONIDA", "concentracion": "0.2MG", "presentacion": "UNIDAD · FRASCO"}, {"nombre": "NEUMOCORT PLUS DPI X 60 + DISPO", "ingrediente": "BUDESONIDA + FORMOTEROL", "concentracion": "0.16MG + 0.004MG", "presentacion": "CAPSULA · CAJA DE 60"}, {"nombre": "NEUMONIL G -BLISTER", "ingrediente": "BENZOCAINA +  DECUALINIO", "concentracion": "10MG + 0.25MG", "presentacion": "COMPRIMIDO · BLISTER DE 4"}, {"nombre": "NICODROPS SOLUCION OFTALMICA - FRASCO * 10 ML", "ingrediente": "NAFAZOLINA+DEXTRAN + HIPROMELOSA", "concentracion": "0.025%+0.1%+0.3%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "NOVOTEARS X 10ML", "ingrediente": "NAFAZOLINA+DEXTRAN + HIPROMELOSA", "concentracion": "12MG + 3MG +1MG", "presentacion": "GOTAS · FRASCO"}, {"nombre": "NUCLEO CMP FORTE", "ingrediente": "CITIDIN+URIDIN", "concentracion": "5MG + 3MG", "presentacion": "CAPSULA · CAJA DE 30"}, {"nombre": "ODDENT AH BABY GEL 0.2% * 20 ML", "ingrediente": "ACIDO HIALURONICO", "concentracion": "0.2%", "presentacion": "GEL · FRASCO"}, {"nombre": "ODDENT GINGIVAL GEL - FRASCO * 25 ML", "ingrediente": "ACIDO HIALURONICO", "concentracion": "1%", "presentacion": "GEL · TUBO"}, {"nombre": "OFTALER 0.025% - FRASCO * 10ML", "ingrediente": "KETOTIFENO", "concentracion": "0.025%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "OFTOL FORTE - FRASCO * 5ML", "ingrediente": "LOTEPREDNOL", "concentracion": "0.002", "presentacion": "GOTAS · FRASCO"}, {"nombre": "OLOF 0.2% - FRASCO * 5ML", "ingrediente": "OLOPATADINA", "concentracion": "0.2%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "OLTANA 40MG - CAJA * 30 COMPRIMIDOS", "ingrediente": "OLMESARTAN", "concentracion": "40MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "OPRALEN 5MG - CAJA * 30 TABLETAS", "ingrediente": "BISOPROLOL", "concentracion": "5MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "OSTEOCARE ZINC+VIT X30", "ingrediente": "CALCIO+VITAMINA D+ZINC", "concentracion": "800MG+1,000UI+10MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "OSTIVAN 150MG - CAJA * 1 TABLETA", "ingrediente": "IBANDRONATO", "concentracion": "150MG", "presentacion": "COMPRIMIDO · CAJA DE 1"}, {"nombre": "OTOSEC HC", "ingrediente": "CIPROFLOXACINA+HIDROCORTISONA", "concentracion": "0.3%+0.1%", "presentacion": "GOTAS · CAJA"}, {"nombre": "OVESTIN 15 GR", "ingrediente": "ESTRIOL", "concentracion": "1MG", "presentacion": "CREMA · TUBO"}, {"nombre": "OXA 50MG - BLISTER * 10 COMPRIMIDOS", "ingrediente": "DICLOFENACO POTASICO", "concentracion": "50MG", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "OXA FORTE 50MG/50MG - CAJA * 10 COMPRIMIDOS", "ingrediente": "DICLOFENACO POTASICO +CODEINA FOSFATO", "concentracion": "50MG + 50MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "PACIFEN 3MG - CAJA * 30 COMPRIMIDOS (PSICO)", "ingrediente": "BROMAZEPAM", "concentracion": "3MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "PANTOSEK 40 MG X 10", "ingrediente": "PANTOPRAZOL", "concentracion": "40MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "PARHEL 200MG - CAJA * 2 TABLETAS", "ingrediente": "ALBENDAZOL", "concentracion": "200MG", "presentacion": "COMPRIMIDO · CAJA DE 2"}, {"nombre": "PEDIALYTE CEREZA", "ingrediente": "ELECTROLITOS+GLUCOSA", "concentracion": "", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "PEDIALYTE COCO 30", "ingrediente": "ELECTROLITOS+GLUCOSA", "concentracion": "", "presentacion": "SOLUCION · BOTE"}, {"nombre": "PEDIALYTE FRESA 60", "ingrediente": "ELECTROLITOS+GLUCOSA", "concentracion": "", "presentacion": "SOLUCION · BOTE"}, {"nombre": "PEDIALYTE MANZANA", "ingrediente": "ELECTROLITOS+GLUCOSA", "concentracion": "", "presentacion": "SOLUCION · BOTE"}, {"nombre": "PEDIALYTE UVA", "ingrediente": "ELECTROLITOS+GLUCOSA", "concentracion": "", "presentacion": "SOLUCION · BOTE"}, {"nombre": "PEPTO-BISMOL 8 OZ (236 ML)", "ingrediente": "SUBSALICILATO DE BISMUTO", "concentracion": "525MG", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "PERIVAN PLUS - FRASCO * 30ML", "ingrediente": "MOSAPRIDA + DIMETILPOLISILOXANO", "concentracion": "5MG + 80MG", "presentacion": "GOTAS · FRASCO"}, {"nombre": "PERIVAN PLUS ENZIMATICO", "ingrediente": "MOSAPRIDA + DIMETILPOLISILOXANO", "concentracion": "5MG + 60MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "PERIVASC 450/50MG - CAJA * 30 COMPRIMIDOS", "ingrediente": "DIOSMINA + HESPERIDINA", "concentracion": "450MG + 50MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "PERIVASC 900MG/1000MG - CAJA * 30 COMPRIMIDOS", "ingrediente": "DIOSMINA + HESPERIDINA", "concentracion": "900MG + 1G", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "PHARMENISONA 5MG - CAJA * 20 TABLETAS", "ingrediente": "PREDNISONA", "concentracion": "5MG", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "POLYDERM 30 GR", "ingrediente": "BETAMETASONA+CLOTRIMAZOL+GENTAMICINA", "concentracion": "50MG + 1G + 100MG", "presentacion": "CREMA · CAJA"}, {"nombre": "PRAMOL PLUS 25MG/25MG  X BLISTER DE 10 TABLETAS", "ingrediente": "DICLOFENACO+TRAMADOL", "concentracion": "25MG + 25MG", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "PREDNIVAN 20 MG X 10", "ingrediente": "PREDNISOLONA", "concentracion": "20MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "PREDNIVAN 60 ML", "ingrediente": "PREDNISOLONA", "concentracion": "15MG/5ML", "presentacion": "JARABE · FRASCO"}, {"nombre": "PRESUSS X 3 ML", "ingrediente": "LATANOPROST", "concentracion": "0.005%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "PRIDAC - CAJA * 30 TABLETAS", "ingrediente": "LEVOSULPIRIDA", "concentracion": "25MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "PRIMABELA 3MG/0.03MG X21 TABLETAS", "ingrediente": "DROSPIRENONA + ETINILESTRADIOL", "concentracion": "3MG + 0.03MG", "presentacion": "COMPRIMIDO · CAJA DE 21"}, {"nombre": "PROCORALAN 5MG - CAJA * 56 COMPRIMIDOS", "ingrediente": "IVABRADINA", "concentracion": "5MG", "presentacion": "COMPRIMIDO · CAJA DE 56"}, {"nombre": "PRODUO 100MG/300MG - CAJA * 32 CAPSULAS", "ingrediente": "BROMURO DE PINAVERIO + DIMETICONA", "concentracion": "100MG + 300MG", "presentacion": "CAPSULA · CAJA DE 32"}, {"nombre": "PROFAXIM 200MG - CAJA * 14 CAPSULAS", "ingrediente": "RIFAXIMINA", "concentracion": "200MG", "presentacion": "CAPSULA · CAJA DE 14"}, {"nombre": "PROFAXIM 550MG", "ingrediente": "RIFAXIMINA", "concentracion": "550MG", "presentacion": "CAPSULA · BLISTER DE 7"}, {"nombre": "PROGESTIN - CAJA * 1 AMPOLLA", "ingrediente": "PROGESTERONA", "concentracion": "100MG/2ML", "presentacion": "INYECTABLE · CAJA DE 1"}, {"nombre": "PROKSI 500 MG CAJA X 10", "ingrediente": "CIPROFLOXACINA", "concentracion": "500MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "PROPRANOLOL 40MG -BLISTER * 20 TABLETAS", "ingrediente": "PROPANOLOL", "concentracion": "40MG", "presentacion": "COMPRIMIDO · BLISTER DE 20"}, {"nombre": "PROVERA", "ingrediente": "MEDROXIPROGESTERONA", "concentracion": "10MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "PSICO SOMA - CAJA * 30 TABLETAS", "ingrediente": "MAGNESIO", "concentracion": "150MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "PSICO SOMA - FRASCO * 90 ML", "ingrediente": "BROMHIDRATO DE GLUTAMATO DE MAGNESIO+PROMETAZINA", "concentracion": "30G + 180MG", "presentacion": "JARABE · FRASCO"}, {"nombre": "PYRIDIUM 100MG BLISTER", "ingrediente": "FENAZOPIRIDINA", "concentracion": "100MG", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "REAGIN 500MG - CAJA * 10 COMPRIMIDOS", "ingrediente": "CITICOLINA", "concentracion": "500MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "RECTO MENADERM 30 GRAMOS", "ingrediente": "BECLOMETASONA", "concentracion": "0.000125", "presentacion": "CREMA · TUBO"}, {"nombre": "REDOXON 1000MG X 12", "ingrediente": "VITMINA C +ZINC", "concentracion": "1G+10MG", "presentacion": "COMPRIMIDO · CAJA DE 12"}, {"nombre": "RESINCOLESTIRAMINA 4G - SOBRE", "ingrediente": "RESINCOLESTIRAMINA", "concentracion": "4G", "presentacion": "SOBRE · SOBRE"}, {"nombre": "REUMETAN - CAJA * 30 CAPSULAS", "ingrediente": "INDOMETACINA+ALUMINIO+MAGNESIO", "concentracion": "25MG + 150MG + 150MG", "presentacion": "CAPSULA · CAJA DE 30"}, {"nombre": "REUMETAN - TUBO * 30 GRAMOS", "ingrediente": "INDOMETACINA+SALICILATO DE METILO", "concentracion": "1% + 5%", "presentacion": "CREMA · TUBO"}, {"nombre": "REVERSAL 15 MG X 30 SOB MONODOSIS", "ingrediente": "MELOXICAM+GLUCOSAMINA", "concentracion": "1500MG + 15MG", "presentacion": "SOBRE · CAJA DE 30"}, {"nombre": "RILATEN - INYECTABLE 20MG / 2ML -UNIDAD", "ingrediente": "ROCIVERINA", "concentracion": "20MG/2ML", "presentacion": "INYECTABLE · AMPOLLA"}, {"nombre": "RILATEN 10MG CAJA X 30", "ingrediente": "ROCIVERINA", "concentracion": "10MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "RINOFED NF 10MG/2MG/5MG JARABE 120ML", "ingrediente": "CODEINA FOSFATO+CLORFENIRAMINA+FENILEFRINA", "concentracion": "10MG + 2MG + 5MG", "presentacion": "JARABE · FRASCO"}, {"nombre": "RINOFED PLUS NF - CAJA * 12 TABLETAS", "ingrediente": "ACETAMINOFEN+FENILEFRINA+DEXTROMETORFANO+CLORFENIRAMINA", "concentracion": "500MG + 5MG + 10MG + 2MG", "presentacion": "COMPRIMIDO · CAJA DE 12"}, {"nombre": "RINOVAL 120 DOSIS", "ingrediente": "MOMETASONA", "concentracion": "0.05MG", "presentacion": "SPRAY NASAL · FRASCO"}, {"nombre": "ROYALINE", "ingrediente": "MELATONINA", "concentracion": "5MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "RUSITAN 10MG X 10", "ingrediente": "RUPATADINA", "concentracion": "10MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "RUSITAN JARABE X 120ML", "ingrediente": "RUPATADINA", "concentracion": "1MG", "presentacion": "JARABE · FRASCO"}, {"nombre": "SATOREN 50MG X 30", "ingrediente": "LOSARTAN", "concentracion": "50MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "SECNIDAZOL 500MG BLISTER * 4 / INFASA", "ingrediente": "SECNIDAZOL", "concentracion": "500MG", "presentacion": "COMPRIMIDO · BLISTER DE 4"}, {"nombre": "SERTAL COMPUESTO 125MG/10MG X 20", "ingrediente": "CLONIXINATO DE LISINA+PROPINOXATO", "concentracion": "125MG + 10MG", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "SERTAL COMPUESTO INYECTABLE  IM/IV - CAJA * 3 DOSIS", "ingrediente": "CLONIXINATO DE LISINA+PROPINOXATO", "concentracion": "100MG + 15MG", "presentacion": "INYECTABLE · CAJA DE 3"}, {"nombre": "SINHISTAN - D FRASCO X100MLCC", "ingrediente": "LORATADINA + FENILEFRINA", "concentracion": "5MG + 2.5MG", "presentacion": "JARABE · FRASCO"}, {"nombre": "SINHISTAN CORT CAJA X10 TAB", "ingrediente": "LORATADINA + BETAMETASONA", "concentracion": "5MG + 0.25MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "SINHISTAN CORT NF - FRASCO * 60 ML", "ingrediente": "LORATADINA + BETAMETASONA", "concentracion": "5MG + 0.25MG", "presentacion": "JARABE · FRASCO"}, {"nombre": "SINHISTAN D X10 CÁPSULAS LP", "ingrediente": "LORATADINA + FENILEFRINA", "concentracion": "5MG + 60MG", "presentacion": "CAPSULA · CAJA DE 10"}, {"nombre": "SINURINSE NINOS KIT (Frasco 120ml y 30 Sobres)", "ingrediente": "BICARBONATO DE SODIO", "concentracion": "120ML", "presentacion": "POLVO · KIT"}, {"nombre": "SITAVAN 100MG - CAJA * 30 COMPRIMIDOS", "ingrediente": "SITAGLIPTINA", "concentracion": "100MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "SLINDA 4MG X28 COMPRIMIDOS", "ingrediente": "DROSPIRENONA", "concentracion": "4MG", "presentacion": "COMPRIMIDO · CAJA DE 28"}, {"nombre": "SMECTA POLVO SUSPENSION - CAJA * 10 SOBRES", "ingrediente": "DIOSMECTITA", "concentracion": "3G", "presentacion": "SOBRE · CAJA DE 10"}, {"nombre": "SOPHIXIN DX GOTAS", "ingrediente": "CIPROFLOXACINA+DEXAMETASONA", "concentracion": "3MG + 1MG", "presentacion": "GOTAS · FRASCO"}, {"nombre": "SOPHIXIN DX UNGUENTO", "ingrediente": "CIPROFLOXACINA+DEXAMETASONA", "concentracion": "3MG + 1MG", "presentacion": "UNGENTO · TUBO"}, {"nombre": "SOPHIXIN OFTENO FRASCO 5 ML", "ingrediente": "CIPROFLOXACINA", "concentracion": "0.003", "presentacion": "GOTAS · FRASCO"}, {"nombre": "SPASMOTEN", "ingrediente": "CLORDIAZEPOXIDO + BROMURO DE CLIDINIO", "concentracion": "5MG + 2.5MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "SPLASH TEARS LUBRICANTE OCULAR - FRASCO * 15ML", "ingrediente": "HIPROMELOSA  +CONDROITIN SULFATO DE SODIO", "concentracion": "0.2%+0.1%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "STAFF 125MG/5ML -SUSPENCION", "ingrediente": "DICLOXACILINA", "concentracion": "125MG/5ML", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "STAFF 500MG -BLISTER", "ingrediente": "DICLOXACILINA", "concentracion": "500MG", "presentacion": "CAPSULA · BLISTER DE 5"}, {"nombre": "STATICA 90MG - CAJA * 7 OVULOS + 7 APLICADORES", "ingrediente": "POLICRESULENO", "concentracion": "90MG", "presentacion": "OVULOS · CAJA DE 7"}, {"nombre": "SULFAPLATA - TUBO * 30 GRAMOS", "ingrediente": "SULFADIAZINA DE PLATA", "concentracion": "1%", "presentacion": "CREMA · TUBO"}, {"nombre": "SULTAM", "ingrediente": "SULTAMICILINA", "concentracion": "375MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "SUPRA 4MG - CAJA * 30 TABLETAS", "ingrediente": "LIDAMIDINA", "concentracion": "4MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "SUPRAMYCINA 100MG - CAJA * 10 TABLETAS", "ingrediente": "DOXICICLINA", "concentracion": "100MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "SYNTHROID 100MCG X30 TABLETAS", "ingrediente": "LEVOTIROXINA", "concentracion": "0.1MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "SYNTHROID 25MCG - CAJA * 30 TABLETAS", "ingrediente": "LEVOTIROXINA", "concentracion": "0.025MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "SYNTHROID 50MCG X30 TABLETAS", "ingrediente": "LEVOTIROXINA", "concentracion": "0.05MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "SYSTANE BALANCE - FRASCO * 10ML", "ingrediente": "PROPILENGLICOL", "concentracion": "0.0001", "presentacion": "GOTAS · FRASCO"}, {"nombre": "TAMIVIR 6MG/1ML SUSPENSION", "ingrediente": "OSELTAMIVIR", "concentracion": "6MG", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "TAMIVIR 75MG -CAJA X10 TABLETAS", "ingrediente": "OSELTAMIVIR", "concentracion": "75MG", "presentacion": "CAPSULA · CAJA DE 10"}, {"nombre": "TAPAZOL 5MG X20 TABLETAS", "ingrediente": "METIMAZOL", "concentracion": "5MG", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "TAZAROL DUO 25MG/75MG - CAJA * 10 TABLETAS", "ingrediente": "DEXKETOPROFENO + TRAMADOL", "concentracion": "25MG + 75MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "TEBOKAN 40MG - CAJA * 20 COMPRIMIDOS", "ingrediente": "EXTRACTO DE GINKGO BILOBA", "concentracion": "40MG", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "TELYDALT DUO 80/10MG - CAJA * 28 COMPRIMIDOS", "ingrediente": "TELMISARTAN+AMLODIPINO", "concentracion": "80MG + 10MG", "presentacion": "COMPRIMIDO · CAJA DE 28"}, {"nombre": "TENSINOR TABLETAS 320MG - CAJA * 30 TABLETAS", "ingrediente": "VALSARTAN", "concentracion": "320MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "TENSISARTAN 80MG X28", "ingrediente": "TELMISARTAN", "concentracion": "80MG", "presentacion": "COMPRIMIDO · CAJA DE 28"}, {"nombre": "TERABIOL 250MG/5ML SUSPENSION 70ML", "ingrediente": "AMPICILINA+SULBACTAM", "concentracion": "220MG+147MG", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "TERABIOL 375MG X20 TABLETAS", "ingrediente": "AMPICILINA+SULBACTAM", "concentracion": "220MG+147MG", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "TERBIX 1% X20GR", "ingrediente": "TERBINAFINA", "concentracion": "1%", "presentacion": "CREMA · CAJA"}, {"nombre": "TERBIX 250MG X30", "ingrediente": "TERBINAFINA", "concentracion": "250MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "TINIZOL 500MG X8", "ingrediente": "TINIDAZOL", "concentracion": "500MG", "presentacion": "COMPRIMIDO · CAJA DE 8"}, {"nombre": "TIOF COLIRIO 0.50% 10ML", "ingrediente": "TIMOLOL", "concentracion": "0.5%", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "TOLESTAN 85MG/500MG - CAJA * 2 TABLETAS", "ingrediente": "SUMATRIPTAN+NAPROXENO SODICO", "concentracion": "85MG + 500MG", "presentacion": "COMPRIMIDO · CAJA DE 2"}, {"nombre": "TRADOXIL 50MG - CAJA * 20 CAPSULAS", "ingrediente": "TRAMADOL", "concentracion": "50MG", "presentacion": "CAPSULA · CAJA DE 20"}, {"nombre": "TRAMAL 50MG/ML CAJA X5 AMPOLLAS", "ingrediente": "TRAMADOL", "concentracion": "50MG", "presentacion": "INYECTABLE · CAJA DE 5"}, {"nombre": "TRANEXIN 100MG/ML X5", "ingrediente": "ACIDO TRANEXAMICO", "concentracion": "100MG/ML", "presentacion": "AMPOLLA · CAJA DE 5"}, {"nombre": "TREX 500MG X 6", "ingrediente": "AZITROMICINA", "concentracion": "500MG", "presentacion": "COMPRIMIDO · CAJA DE 6"}, {"nombre": "TREX FORTE 400MG / 5 ML X 30 ML", "ingrediente": "AZITROMICINA", "concentracion": "400MG/5ML", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "TRIGENTAX 20 GR", "ingrediente": "CLOTRIMAZOL+NEOMICINA+BETAMETASONA", "concentracion": "1%+0.5%+0.04%", "presentacion": "CREMA · TUBO"}, {"nombre": "TROPEX 10 ML", "ingrediente": "FENAZONA +HIDROXIBENZOATO+GLICEROL", "concentracion": "5%+0.1%+100%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "TUSILEXIL - ROWE", "ingrediente": "CARBOXIMETILCESTEINA+DEXTROMETORFANO+CLORFENIRAMINA", "concentracion": "150MG + 5MG + 2.5MG", "presentacion": "JARABE · FRASCO"}, {"nombre": "TUSILEXIL JARABE 120ML", "ingrediente": "CARBOXIMETILCESTEINA+DEXTROMETORFANO+CLORFENIRAMINA", "concentracion": "150MG + 5MG + 2.5MG", "presentacion": "JARABE · FRASCO"}, {"nombre": "TYLENOL 3.2G/100ML INFANTIL", "ingrediente": "ACETAMINOFEN", "concentracion": "3.2G/100ML", "presentacion": "SUSPENSION · FRASCO"}, {"nombre": "ULTRA D3 * 96 TABLETAS", "ingrediente": "VITAMINA D3", "concentracion": "1,000UI", "presentacion": "COMPRIMIDO · CAJA DE 96"}, {"nombre": "ULTRA OMEGA-3 X 60 CAP", "ingrediente": "OMEGA 3", "concentracion": "550MG", "presentacion": "CAPSULA · CAJA DE 60"}, {"nombre": "UNICILIN ADULTO X  1 VIAL", "ingrediente": "PENICILINA", "concentracion": "1,200,000UI", "presentacion": "INYECTABLE · CAJA DE 1"}, {"nombre": "UNICILIN INFANTIL  X 1 VIAL", "ingrediente": "PENICILINA", "concentracion": "1,200,000UI", "presentacion": "INYECTABLE · CAJA DE 1"}, {"nombre": "UPRAL E - CAJA * 14 CAPSULAS", "ingrediente": "ESOMEPRAZOL", "concentracion": "40MG", "presentacion": "CAPSULA · CAJA DE 14"}, {"nombre": "UPRAL E 10 MG - CAJA * 30 SOBRES", "ingrediente": "ESOMEPRAZOL", "concentracion": "10MG", "presentacion": "SOBRE · CAJA DE 30"}, {"nombre": "URA-HAUT 10 (10%) - CREMA - TUBO * 200ML", "ingrediente": "UREA + ALOE VERA + VITAMINA E + PANTENOL", "concentracion": "10% + 1% + 1% + 1%", "presentacion": "CREMA · TUBO"}, {"nombre": "URDEX 250MG X 50", "ingrediente": "ACIDO URSODESOXICOLICO", "concentracion": "250MG", "presentacion": "COMPRIMIDO · CAJA DE 50"}, {"nombre": "URGINAL UD - CAJA * 10 TABLETAS", "ingrediente": "OXIBUTININA", "concentracion": "10MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "URIKEM 300MG X30", "ingrediente": "ALOPURINOL", "concentracion": "300MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "URO VAXOM 6MG -CAJA * 30 CAPSULAS", "ingrediente": "LISADOS BACTERIANOS", "concentracion": "6MG", "presentacion": "CAPSULA · CAJA DE 30"}, {"nombre": "UROBERRY FEM - CAJA * 30 TABLETAS", "ingrediente": "EXTRACTO DE ARANDANO+VITAMINA C+HIBISCUS", "concentracion": "36MG + 20MG + 50MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "UROPRIN 3G - CAJA * 1 SOBRE GRANULADO", "ingrediente": "FOSFOMICINA", "concentracion": "3G", "presentacion": "SOBRE · CAJA DE 1"}, {"nombre": "VAGIL * 6 OVULOS", "ingrediente": "CLOTRIMAZOL+SULFISOXAZOL+ALANTOINA", "concentracion": "300MG + 200MG + 60MG", "presentacion": "OVULOS · CAJA DE 6"}, {"nombre": "VAGIL CREMA - TUBO * 50 GRAMOS", "ingrediente": "CLOTRIMAZOL+SULFISOXAZOL+ALANTOINA", "concentracion": "1G+10G+2G", "presentacion": "CREMA · TUBO"}, {"nombre": "VAGIL PLUS CREMA VAGINAL - TUBO * 50 GRAMOS", "ingrediente": "METRONIDAZOL+MICONAZOL+NEOMICINA+CENTELLA ASIATICA", "concentracion": "", "presentacion": "CREMA · TUBO"}, {"nombre": "VALAXAM 320MG/5MG - CAJA * 30 TABLETAS", "ingrediente": "VALSARTAN + AMLODIPINO", "concentracion": "320MG + 5MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "VALAXAM D 160/05/12.5 - CAJA * 30 TABLETAS", "ingrediente": "VALSARTAN + HIDROCLOROTIAZIDA + AMLODIPINO", "concentracion": "160MG + 12.5MG+5MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "VALAXAM D 320/10/25MG - CAJA * 30 TABLETAS", "ingrediente": "VALSARTAN + HIDROCLOROTIAZIDA + AMLODIPINO", "concentracion": "160MG + 12.5MG+5MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "VANTAL SPRAY 30 ML", "ingrediente": "BENCIDAMINA", "concentracion": "150MG/100ML", "presentacion": "AEROSOL · FRASCO"}, {"nombre": "VASTAREL MR 35MG - CAJA * 30 TABLETAS", "ingrediente": "TRIMETAZIDINA", "concentracion": "35MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "VASTEN 20MG * 30 TABLETAS", "ingrediente": "ROSUVASTATINA", "concentracion": "20MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "VASTEN E 20MG+10MG X 30 TAB.", "ingrediente": "ROSUVASTATINA + EZETIMIBA", "concentracion": "20MG + 10MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "VENOSMIL GEL - TUBO * 60 GRAMOS", "ingrediente": "HIDROSMINA", "concentracion": "2MG/G", "presentacion": "GEL · TUBO"}, {"nombre": "VENTOLIN 200 DOSIS", "ingrediente": "SALBUTAMOL", "concentracion": "0.1MG", "presentacion": "INHALADOR · CAJA"}, {"nombre": "VERSATIS 5% 700MG  - CAJA * 5 PARCHES", "ingrediente": "LIDOCAINA", "concentracion": "5%", "presentacion": "PARCHE · CAJA DE 5"}, {"nombre": "VERTICEN 25MG X45", "ingrediente": "DIFENIDOL", "concentracion": "25MG", "presentacion": "COMPRIMIDO · CAJA DE 45"}, {"nombre": "VIANASOL 2.5 MG 5ML FRASCO 60 ML", "ingrediente": "DESLORATADINA", "concentracion": "2.5MG/5ML", "presentacion": "FRASCO · CAJA"}, {"nombre": "VIANASOL 5MG - CAJA * 10 TABLETAS", "ingrediente": "DESLORATADINA", "concentracion": "5MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "VIANASYL AV ENJUAGUE NASAL - CAJA * 30 SOBRES", "ingrediente": "CLORURO DE SODIO", "concentracion": "2G", "presentacion": "SPRAY NASAL · CAJA DE 30"}, {"nombre": "VIGADEXA 5 ML", "ingrediente": "MOXIFLOXACINO+ DEXAMETASONA", "concentracion": "0.5% + 0.1%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "VYMADA 100MG - CAJA * 28 TABLETAS", "ingrediente": "VALSARTAN + SACUBITRIL", "concentracion": "49MG+51MG", "presentacion": "COMPRIMIDO · CAJA DE 28"}, {"nombre": "XALAR 10MG - BLISTER * 10 CAPSULAS", "ingrediente": "MONTELUKAST", "concentracion": "10MG", "presentacion": "CAPSULA · BLISTER DE 10"}, {"nombre": "XALAR 10MG - CAJA * 30 CAPSULAS GEL", "ingrediente": "MONTELUKAST", "concentracion": "10MG", "presentacion": "CAPSULA · CAJA DE 30"}, {"nombre": "XALAR 5MG - CAJA * 30 TABLETAS", "ingrediente": "MONTELUKAST", "concentracion": "5MG", "presentacion": "COMPRIMIDO · CAJA DE 30"}, {"nombre": "XOLOF - FRASCO * 5 ML", "ingrediente": "TABRAMICINA", "concentracion": "0.3%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "XOLOF D 0.3% / 0.1% / - FRASCO * 5ML", "ingrediente": "TOBRAMICINA+DEXAMETASONA", "concentracion": "0.3% + 0.1%", "presentacion": "SOLUCION · FRASCO"}, {"nombre": "XOLOF D UNGÜENTO OFTALMICO - TUBO * 3.5 GRAMOS", "ingrediente": "TABRAMICINA+DEXAMETASONA", "concentracion": "0.3%+0.1%", "presentacion": "UNGENTO · TUBO"}, {"nombre": "ZAMEN 30 MG - CAJA * 10 COMPRIMIDOS", "ingrediente": "DEFLAZACORT", "concentracion": "30MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "ZAMEN 6MG - CAJA * 10 COMPRIMIDO", "ingrediente": "DEFLAZACORT", "concentracion": "6MG", "presentacion": "COMPRIMIDO · CAJA DE 10"}, {"nombre": "ZEBESTEN COLIRIO - FRASCO * 5 ML", "ingrediente": "BROMFENACO", "concentracion": "0.09%", "presentacion": "GOTAS · FRASCO"}, {"nombre": "ZETAWIN FORTE 1G * 1 TABLETA", "ingrediente": "ACETAMINOFEN", "concentracion": "1G", "presentacion": "COMPRIMIDO · UND"}, {"nombre": "ZETAWIN FORTE 1G * 20 TABLETAS", "ingrediente": "ACETAMINOFEN", "concentracion": "1G", "presentacion": "COMPRIMIDO · CAJA DE 20"}, {"nombre": "ZETAWIN FORTE 1G * BLISTER", "ingrediente": "ACETAMINOFEN", "concentracion": "1G", "presentacion": "COMPRIMIDO · BLISTER DE 10"}, {"nombre": "ZUVIC 100MG - CAJA * 20 CAPSULAS", "ingrediente": "NITROFURANTOINA", "concentracion": "100MG", "presentacion": "CAPSULA · CAJA DE 20"}];
+
+const PER_PAGE = 25;
+let filtered = [...PRODUCTOS];
+let page = 1;
+
+function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : ''; }
+function titleCase(s) { return s.split(' ').map(w => cap(w)).join(' '); }
+
+function buildPresOptions() {
+  const types = [...new Set(PRODUCTOS.map(p => p.presentacion.split(' · ')[0]).filter(Boolean))].sort();
+  const sel = document.getElementById('presFilter');
+  types.forEach(t => {
+    const o = document.createElement('option');
+    o.value = t; o.textContent = titleCase(t);
+    sel.appendChild(o);
+  });
+}
+
+function applyFilters() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const pf = document.getElementById('presFilter').value;
+  filtered = PRODUCTOS.filter(p => {
+    const matchQ = !q || p.ingrediente.toLowerCase().includes(q) || p.nombre.toLowerCase().includes(q) || p.concentracion.toLowerCase().includes(q);
+    const matchP = !pf || p.presentacion.startsWith(pf);
+    return matchQ && matchP;
+  });
+  page = 1;
+  render();
+}
+
+function render() {
+  const start = (page - 1) * PER_PAGE;
+  const slice = filtered.slice(start, start + PER_PAGE);
+  const tbody = document.getElementById('tableBody');
+  const noRes = document.getElementById('noResults');
+  document.getElementById('resultsInfo').textContent = filtered.length + ' resultado' + (filtered.length !== 1 ? 's' : '');
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '';
+    noRes.style.display = 'block';
+  } else {
+    noRes.style.display = 'none';
+    tbody.innerHTML = slice.map(p => `
+      <tr>
+        <td>
+          <div class="td-ing">${titleCase(p.ingrediente)}</div>
+        </td>
+        <td>${p.concentracion ? '<span class="td-conc">' + p.concentracion + '</span>' : '<span style="color:var(--text-muted);font-size:0.8rem">—</span>'}</td>
+        <td class="td-pres">${titleCase(p.presentacion.replace('·', '·'))}</td>
+        <td class="td-nombre">${titleCase(p.nombre)}</td>
+      </tr>`).join('');
+  }
+  renderPagination();
+}
+
+function renderPagination() {
+  const total = Math.ceil(filtered.length / PER_PAGE);
+  const pag = document.getElementById('pagination');
+  if (total <= 1) { pag.innerHTML = ''; return; }
+  let html = `<button class="page-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}>&#8592;</button>`;
+  const range = [];
+  for (let i = 1; i <= total; i++) {
+    if (i === 1 || i === total || (i >= page - 2 && i <= page + 2)) range.push(i);
+    else if (range[range.length-1] !== '…') range.push('…');
+  }
+  range.forEach(r => {
+    if (r === '…') html += `<span style="padding:0 4px;color:var(--text-muted)">…</span>`;
+    else html += `<button class="page-btn ${r===page?'active':''}" onclick="goPage(${r})">${r}</button>`;
+  });
+  html += `<button class="page-btn" onclick="goPage(${page+1})" ${page===total?'disabled':''}>&#8594;</button>`;
+  pag.innerHTML = html;
+}
+
+function goPage(n) {
+  const total = Math.ceil(filtered.length / PER_PAGE);
+  if (n < 1 || n > total) return;
+  page = n;
+  render();
+  document.querySelector('.table-wrap').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('total-count').textContent = PRODUCTOS.length + ' productos';
+buildPresOptions();
+render();
+</script>
+</body>
+</html>
